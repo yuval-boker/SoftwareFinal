@@ -1,5 +1,5 @@
 #define PY_SSIZE_T_CLEAN
-#include </System/Library/Frameworks/Python.framework/versions/2.7/include/python2.7/Python.h>
+#include <Python.h>
 #include "spkmeans.h"
 
 
@@ -55,10 +55,9 @@ PyObject* clusters_to_PyList(Cluster *clusters, int k, int dim){
 
 PyObject* matrix_to_PyList(double **arr, int n){
     Py_ssize_t i, j;
-    PyObject *PyList = PyList_New((Py_ssize_t)(n));
+    PyObject *PyList = PyList_New((Py_ssize_t)(n*n));
     PyObject *item;
     for(i = 0; i < n; i++){
-        item = PyList_New((Py_ssize_t)(n));
         for(j = 0; j < n; j++){
             PyList_SetItem(item, j, PyFloat_FromDouble(arr[i][j]));
         }

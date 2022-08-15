@@ -25,7 +25,7 @@ def print_list(lst):
         print(','.join(map(double_to_str, vec)), end='' if i == len(lst)-1 else '\n')
 
 def prepare():
-    assert len(sys.argv) == 3, 'Invalid Input!'
+    assert len(sys.argv) == 4, 'Invalid Input!'
     k = validity_check_k()
     goal = sys.argv[2]
     file = sys.argv[3]
@@ -46,18 +46,19 @@ def process_file(file, k):
     assert k < n, 'Invalid Input!'
     return data_array, n, dim
 
+
 def get_goal(goal, data_array, n, dim):
     if goal == "wam":
-        res = spkmeans_capi.get_WAM(data_array, n, dim)
-        res = np.array(res).reshape(n, n)
+        res = spkmeans_capi.get_WAM((data_array, n, dim))
+        # res = np.array(res).reshape(n, n)
     elif goal == "ddg":
-        res = spkmeans_capi.get_DDG(data_array, n, dim)
-        res = np.array(res).reshape(n, n)
+        res = spkmeans_capi.get_DDG((data_array, n, dim))
+        # res = np.array(res).reshape(n, n)
     elif goal == "lnorm":
-        res = spkmeans_capi.get_L_norm(data_array, n, dim)
-        res = np.array(res).reshape(n, n)
+        res = spkmeans_capi.get_L_norm((data_array, n, dim))
+        # res = np.array(res).reshape(n, n)
     elif goal == "jacobi":
-        spkmeans_capi.run_jacobi(data_array, n, dim)
+        spkmeans_capi.run_jacobi((data_array, n, dim))
     print_list(res)
 
 # add goal = spk (needs to get data matrix from c, and call kmeans_pp), goal = jacobi
@@ -87,6 +88,5 @@ def get_goal(goal, data_array, n, dim):
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_points, n, dim = process_file(file, k)
-    data_array = data_points.to_numpy().flatten().tolist() #why again???
-    get_goal(goal, data_array, n, dim)
+    get_goal(goal, data_points, n, dim)
 
