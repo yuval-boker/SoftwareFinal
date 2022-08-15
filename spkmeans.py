@@ -50,7 +50,8 @@ def process_file(file, k):
 def get_goal(goal, data_array, n, dim):
     if goal == "wam":
         res = spkmeans_capi.get_WAM((data_array, n, dim))
-        # res = np.array(res).reshape(n, n)
+        for p in res:  # prints the final centroids from the K-means algorithm executed in c
+            print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in p))
     elif goal == "ddg":
         res = spkmeans_capi.get_DDG((data_array, n, dim))
         # res = np.array(res).reshape(n, n)
