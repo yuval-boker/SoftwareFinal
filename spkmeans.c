@@ -78,7 +78,7 @@ void free_data_points(int n, Point* points){
 /*
  * Deallocates the memory that was previously dynamically allocated 
  */
-void free_2D(double **matrix, int n){ //remove n?
+void free_2D(double **matrix){
     int i, j;
     if (matrix != NULL) {
         free(matrix[0]);
@@ -245,11 +245,11 @@ int transform_matrix(double **mat, double **v, int n, int i, int j){
  * Calculate sum of squares of all off-diagonal elements of given matrix
  * going through half of matrix elments due to symmetry
  */
-double off_square(double **mat, int n){
+double off_square(double **mat, int n) {
     int i, j;
     double sum = 0.0;
-    for(i = 0; i < n; i++){
-        for(j = 0; j < i; j++){
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < i; j++) {
             sum += 2 * (mat[i][j] * mat[i][j]);
         }
     }
@@ -258,13 +258,13 @@ double off_square(double **mat, int n){
 /*
  * creates jacobi
  */
-double **jacobi(double **A, int n){
+double **jacobi(double **A, int n) {
     double **A_prime, **V;
     double off_A, off_A_prime;
     int i, j, l = 0;
     V = I_matrix(n); /* initializing V to Identity matrix */
-    while(l < MAX_ITER_J){
-        if(l == 0){
+    while (l < MAX_ITER_J) {
+        if (l == 0) {
             off_A = off_square(A, n);
         }
         find_max_indices_off_diag(A, &i, &j, n);
@@ -372,7 +372,7 @@ double **create_DDG(Point *points, int dim, int n){
     matrix_wam = create_WAM(points, dim, n);
     matrix_ddg = matrix_init(n, n);            /* DDG ∈ R^(n×n) */
     set_DDG(matrix_wam, matrix_ddg, n);
-    free_2D(matrix_wam, n);
+    free_2D(matrix_wam);
     return matrix_ddg;
 }
 
@@ -419,8 +419,8 @@ double **create_L_norm(Point *points, int dim, int n) {
     matrix_ddg = create_DDG(points, dim, n);
     matrix_L_norm = matrix_init(n, n);            /* L_norm ∈ R^(n×n) */
     set_L_norm(matrix_wam, matrix_ddg, matrix_L_norm, n);
-    free_2D(matrix_wam, n);
-    free_2D(matrix_ddg, n);
+    free_2D(matrix_wam);
+    free_2D(matrix_ddg);
     return matrix_L_norm;
 }
 
@@ -441,8 +441,8 @@ void create_Jacobi(Point *points,int dim, int n){
     get_diag(A, eigen_values, n);
     print_Jacobi(eigen_vectors, eigen_values, n);
     free(eigen_values);
-    free_2D(eigen_vectors, n);
-    free_2D(A, n);
+    free_2D(eigen_vectors);
+    free_2D(A);
 }
 
 /*
@@ -494,17 +494,17 @@ void get_goal(char *goal, Point *points, int dim, int n){
     if(strcmp(goal, "wam") == 0) {
         tmp = create_WAM(points, dim, n);
         print_matrix(tmp, n, n);
-        free_2D(tmp, n);
+        free_2D(tmp);
     }
     else if(strcmp(goal, "ddg") == 0) {
         tmp = create_DDG(points, dim, n);
         print_matrix(tmp, n, n);
-        free_2D(tmp, n);
+        free_2D(tmp);
     }
     else if(strcmp(goal, "lnorm") == 0) {
         tmp = create_L_norm(points, dim, n);
         print_matrix(tmp, n, n);
-        free_2D(tmp, n);
+        free_2D(tmp);
     }
     else if(strcmp(goal, "jacobi") == 0){
         create_Jacobi(points, dim, n);
@@ -545,4 +545,3 @@ int main(int argc, char *argv[]) {
     get_goal(goal, points, dim, n);
     return 0;
 }
-

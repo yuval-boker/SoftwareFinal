@@ -74,7 +74,7 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     double **WAM;
     Point *points;
     PyObject *data_points, *py_WAM;
-    Py_ssize_t n, dim;
+    int n, dim;
     if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
@@ -85,7 +85,7 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     assert(WAM != NULL);
     set_WAM(points, WAM, dim, n);
     py_WAM = matrix_to_PyList(WAM, n);
-    free_2D(WAM, n);
+    free_2D(WAM);
     free_data_points(n, points);
     return py_WAM;
 }
@@ -97,7 +97,7 @@ static PyObject *get_DDG(PyObject *self, PyObject *args) {
     double **WAM, **DDG;
     Point *points;
     PyObject *data_points, *py_DDG;
-    Py_ssize_t n, dim;
+    int n, dim;
     if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
@@ -110,8 +110,8 @@ static PyObject *get_DDG(PyObject *self, PyObject *args) {
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
     py_DDG = matrix_to_PyList(DDG, n);
-    free_2D(WAM, n);
-    free_2D(DDG, n);
+    free_2D(WAM);
+    free_2D(DDG);
     free_data_points(n, points);
     return py_DDG;
 }
@@ -123,7 +123,7 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     double **WAM, **DDG, **L_norm;
     Point *points;
     PyObject *data_points, *py_L_norm;
-    Py_ssize_t n, dim;
+    int n, dim;
     if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
@@ -138,9 +138,9 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     set_DDG(WAM, DDG, n);
     set_L_norm(WAM, DDG, L_norm, n);
     py_L_norm = matrix_to_PyList(L_norm, n);
-    free_2D(WAM, n);
-    free_2D(DDG, n);
-    free_2D(L_norm, n);
+    free_2D(WAM);
+    free_2D(DDG);
+    free_2D(L_norm);
     free_data_points(n, points);
     return py_L_norm;
 }
@@ -162,7 +162,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     if(!vectors || !eigen_vectors || !eigen_values) { //not sure what to do
         return PyErr_NoMemory();
     }
-    PyList_to_matrix(py_vectors, vectors, n, dim);
+    pyList_to_matrix(py_vectors, vectors, dim, n);
     eigen_vectors = jacobi(vectors, n);
     if (!eigen_vectors){
         return PyErr_NoMemory();
@@ -173,8 +173,8 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     }
     print_Jacobi(eigen_vectors, eigen_values, n);
     free(eigen_values);
-    free_2D(eigen_vectors, n);
-    free_2D(vectors, n);
+    free_2D(eigen_vectors);
+    free_2D(vectors);
     //return? 
 }
 #define FUNC(_flag, _name, _docstring) { #_name, (PyCFunction)_name, _flag, PyDoc_STR(_docstring) }

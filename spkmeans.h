@@ -38,7 +38,7 @@ typedef struct{
  */
 double **matrix_init(int n, int m);
 void free_data_points(int n, Point* points);
-void free_2D(double **arr, int n);
+void free_2D(double **arr);
 Point* allocate_mem(int dim, int n);
 void data_to_matrix(Point *points, double **matrix, int n, int dim);
 
@@ -49,6 +49,7 @@ void print_double(double num);
 void print_row(double *row, int n);
 void print_column(double *col, int dim, int n);
 void print_matrix(double **array, int n, int dim);
+void print_Jacobi(double **eign_vectors, double const *eign_values, int n);
 
 /*
  * WAM
