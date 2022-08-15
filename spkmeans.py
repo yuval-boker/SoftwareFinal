@@ -7,10 +7,23 @@ MAX_ITER = 300
 JACOBI_MAX_ITER = 100
 np.random.seed(0)
 
-def print_matrix(mat):
-    np.set_printoptions(precision=4)
-    print(mat)
-    
+# def print_matrix(mat):
+#     np.set_printoptions(precision=4)
+#     print(mat)
+def double_to_str(num):
+    """
+    Print a double with 4 point persicion,
+    includes a fix for situations where -0.0000 is printed
+    """
+    if -0.00005 < num < 0:
+        num = 0.0
+    return f'{num:.4f}'
+
+
+def print_list(lst):
+    for i, vec in enumerate(lst):
+        print(','.join(map(double_to_str, vec)), end='' if i == len(lst)-1 else '\n')
+
 def prepare():
     assert len(sys.argv) == 3, 'Invalid Input!'
     k = validity_check_k()
@@ -45,6 +58,7 @@ def get_goal(goal, data_array, n, dim):
         res = np.array(res).reshape(n, n)
     elif goal == "jacobi":
         spkmeans_capi.run_jacobi(data_array, n, dim)
+    print_list(res)
 
 # add goal = spk (needs to get data matrix from c, and call kmeans_pp), goal = jacobi
 
