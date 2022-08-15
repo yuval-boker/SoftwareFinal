@@ -75,7 +75,7 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_WAM;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
         return PyErr_Format(PyExc_TypeError, "Invalid input!");
@@ -98,7 +98,7 @@ static PyObject *get_DDG(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_DDG;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
         return PyErr_Format(PyExc_TypeError, "Invalid input!");
@@ -124,7 +124,7 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_L_norm;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim))
         return NULL;
     if (!PyList_Check(data_points))
         return PyErr_Format(PyExc_TypeError, "Invalid input!");
@@ -151,7 +151,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     int n, dim;
     PyObject *py_vectors;
 //    *res_values, *res_vectors, *res_tuple;
-    if(!PyArg_ParseTuple(args, "(Oii):jacobi", &py_vectors, &n, &dim)){
+    if(!PyArg_ParseTuple(args, "Oii", &py_vectors, &n, &dim)){
         return NULL;
     }
     if(!PyList_Check(py_vectors)){
@@ -160,13 +160,11 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     vectors = matrix_init(n, dim);
     eigen_values = calloc(n, sizeof(double));
     if(!eigen_values) {
-        return PyErr_NoMemory();
+        printf("An Error Has Occurred\n");
+        return NULL;
     }
     pyList_to_matrix(py_vectors, vectors, dim, n);
     eigen_vectors = jacobi(vectors, n);
-    if (!eigen_vectors){
-        return PyErr_NoMemory();
-    }
     get_diag(vectors,eigen_values, n);
     print_Jacobi(eigen_vectors, eigen_values, n);
     free(eigen_values);

@@ -53,13 +53,13 @@ def get_goal(goal, data_array, n, dim):
         for p in res:  # prints the final centroids from the K-means algorithm executed in c
             print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in p))
     elif goal == "ddg":
-        res = spkmeans_capi.get_DDG((data_array, n, dim))
+        res = spkmeans_capi.get_DDG(data_array, n, dim)
         # res = np.array(res).reshape(n, n)
     elif goal == "lnorm":
-        res = spkmeans_capi.get_L_norm((data_array, n, dim))
+        res = spkmeans_capi.get_L_norm(data_array, n, dim)
         # res = np.array(res).reshape(n, n)
     elif goal == "jacobi":
-        spkmeans_capi.run_jacobi((data_array, n, dim))
+        spkmeans_capi.run_jacobi(data_array, n, dim)
     print_list(res)
 
 # add goal = spk (needs to get data matrix from c, and call kmeans_pp), goal = jacobi
