@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <math.h>
 
-#define Mem_Assertion(x) if (!(x)){printf("An Error Has Occurred\n"); exit(1);}//changed to exit() from abort inorder to close open files
+#define Mem_Assertion(x) if (!(x)){printf("An Error Has Occurred\n"); exit(1);}
 #define MAX_ITER 300
 #define EPSILON_J 0.00001
 #define MAX_ITER_J 100

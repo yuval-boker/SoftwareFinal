@@ -125,9 +125,9 @@ double **matrix_init(int n, int m){
     double **a;
     int i;
     p = (double*)calloc(n*m, sizeof(double));
-    assert(p != NULL); //change to memAsertion???
+    Mem_Assertion(p != NULL);
     a = (double**) calloc(n, sizeof(double*));
-    assert(a != NULL);
+    Mem_Assertion(a != NULL);
     for(i = 0; i < n; i++){
         a[i] = p+i*m;
     }
@@ -381,7 +381,7 @@ double *process_DDG(double **DDG, int n){
     double *res;
     int i;
     res = (double*) calloc(n,sizeof(double));
-    assert(res != NULL);
+    Mem_Assertion(res != NULL);
     for (i = 0; i < n; i++){
         res[i] = pow(DDG[i][i], -0.5);
     }

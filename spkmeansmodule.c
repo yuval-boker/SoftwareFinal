@@ -75,14 +75,12 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_WAM;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
-    if (!PyList_Check(data_points))
-        return PyErr_Format(PyExc_TypeError, "Invalid input!");
+    }
     points = allocate_mem(dim, n);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
-    assert(WAM != NULL);
     set_WAM(points, WAM, dim, n);
     py_WAM = matrix_to_PyList(WAM, n);
     free_2D(WAM);
@@ -98,15 +96,13 @@ static PyObject *get_DDG(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_DDG;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
-    if (!PyList_Check(data_points))
-        return PyErr_Format(PyExc_TypeError, "Invalid input!");
+    }
     points = allocate_mem(dim, n);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
     DDG = matrix_init(n, n);
-    assert(WAM != NULL || DDG != NULL);
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
     py_DDG = matrix_to_PyList(DDG, n);
@@ -124,16 +120,14 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     Point *points;
     PyObject *data_points, *py_L_norm;
     int n, dim;
-    if (!PyArg_ParseTuple(args, "(Oii):wam", &data_points, &n, &dim))
+    if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
-    if (!PyList_Check(data_points))
-        return PyErr_Format(PyExc_TypeError, "Invalid input!");
+    }
     points = allocate_mem(dim, n);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
     DDG = matrix_init(n, n);
     L_norm = matrix_init(n, n);
-//    assert(WAM != NULL || DDG != NULL || L_norm != NULL);
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
     set_L_norm(WAM, DDG, L_norm, n);
@@ -151,7 +145,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     int n, dim;
     PyObject *py_vectors;
 //    *res_values, *res_vectors, *res_tuple;
-    if(!PyArg_ParseTuple(args, "(Oii):jacobi", &py_vectors, &n, &dim)){
+    if(!PyArg_ParseTuple(args, "Oii", &py_vectors, &n, &dim)){
         return NULL;
     }
     if(!PyList_Check(py_vectors)){
