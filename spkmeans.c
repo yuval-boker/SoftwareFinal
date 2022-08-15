@@ -40,7 +40,7 @@ void print_matrix(double **array, int n, int dim) {
 /*
  * Prints the eigenvalues as the first line, second line onward is the corresponding eigenvectors
  */
-void print_Jacobi(double **eign_vectors, double const *eign_values, int n){ //may change const
+void print_Jacobi(double **eign_vectors, double *eign_values, int n){ //may change const
     print_row(eign_values, n);
     printf("\n");
     print_matrix(eign_vectors, n, n);
@@ -79,7 +79,6 @@ void free_data_points(int n, Point* points){
  * Deallocates the memory that was previously dynamically allocated 
  */
 void free_2D(double **matrix){
-    int i, j;
     if (matrix != NULL) {
         free(matrix[0]);
         free(matrix);
@@ -259,8 +258,8 @@ double off_square(double **mat, int n) {
  * creates jacobi
  */
 double **jacobi(double **A, int n) {
-    double **A_prime, **V;
-    double off_A, off_A_prime;
+    double **V;
+    double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
     V = I_matrix(n); /* initializing V to Identity matrix */
     while (l < MAX_ITER_J) {
@@ -282,12 +281,11 @@ double **jacobi(double **A, int n) {
 /*
 * Stores given matrix diagonal values in a 1D array
 */
-int get_diag(double const **mat, double *diag,int n){
+void get_diag(double **mat, double *diag, int n){
     int i;
     for(i = 0; i < n; i++){
         diag[i] = mat[i][i];
     }
-    return 0;
 }
 
 /** EIGENGAP HEURISTIC **/
@@ -380,7 +378,7 @@ double **create_DDG(Point *points, int dim, int n){
  * Based on DDG's diagonal, creates an array 
  */
 double *process_DDG(double **DDG, int n){
-    double *res, t;
+    double *res;
     int i;
     res = (double*) calloc(n,sizeof(double));
     assert(res != NULL);
@@ -432,7 +430,6 @@ double **create_L_norm(Point *points, int dim, int n) {
 void create_Jacobi(Point *points,int dim, int n){
     double **A, **eigen_vectors;
     double *eigen_values;
-    int i;
     A = matrix_init(n,dim);
     data_to_matrix(points, A, n, dim);
     eigen_vectors = jacobi(A, n);
@@ -514,8 +511,7 @@ void get_goal(char *goal, Point *points, int dim, int n){
 
 int main(int argc, char *argv[]) {
     char* goal;
-    //char* file_path_input; why??
-    int dim, n, validity;
+    int dim, n;
     FILE* fp;
     Info info;
     Point* points;
@@ -533,15 +529,9 @@ int main(int argc, char *argv[]) {
     info = extractInfo(fp);
     dim = info.dim;
     n = info.n;
-    // printf("n is: %d", n);
-    // printf("\n");
     points = allocate_mem(dim, n);
     rewind(fp); //added by Dana
-    validity = processFile(info, points, fp);
-    // if (validity == 1){ //why? 
-    //     free_data_points(n, points);
-    //     exit(1);
-    // }
+    processFile(info, points, fp);
     get_goal(goal, points, dim, n);
     return 0;
 }

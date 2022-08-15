@@ -82,7 +82,7 @@ double sign(double num);
 int transform_matrix(double **mat, double **v, int n, int i, int j);
 double off_square(double **mat, int n);
 double **jacobi(double **A, int n);
-int get_diag(double const **mat, double *diag,int n);
+void get_diag(double **mat, double *diag, int n);
 
 /*
  * C 

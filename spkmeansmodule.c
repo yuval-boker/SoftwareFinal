@@ -16,7 +16,7 @@ void pyList_to_array(PyObject *list, double* vector, int dim){
 
 void create_matrix(PyObject* points_list, Point* points, int dim, int n) {
     int i;
-    PyObject *item, *coordinate;
+    PyObject *item;
     for (i = 0; i < n; i++) {
         item = PyList_GetItem(points_list, i);
         pyList_to_array(item, points[i].vector, dim);
@@ -32,7 +32,7 @@ void pyList_to_matrix(PyObject* vector_list, double** a, int dim, int n){
     for(i = 0; i < n; i++){
         row = PyList_GetItem(vector_list, i);
         for(j = 0; j < dim; j++){
-            item = PyList_GetItem(item, j);
+            item = PyList_GetItem(row, j);
             a[i][j] = PyFloat_AsDouble(item);
         }
     }
@@ -133,7 +133,7 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     WAM = matrix_init(n, n);
     DDG = matrix_init(n, n);
     L_norm = matrix_init(n, n);
-    assert(WAM != NULL || DDG != NULL || L_norm != NULL);
+//    assert(WAM != NULL || DDG != NULL || L_norm != NULL);
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
     set_L_norm(WAM, DDG, L_norm, n);
@@ -149,7 +149,8 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     double  **eigen_vectors, **vectors;
     double *eigen_values;
     int n, dim;
-    PyObject *py_vectors, *res_values, *res_vectors, *res_tuple;
+    PyObject *py_vectors;
+//    *res_values, *res_vectors, *res_tuple;
     if(!PyArg_ParseTuple(args, "(Oii):jacobi", &py_vectors, &n, &dim)){
         return NULL;
     }
@@ -157,9 +158,8 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
         return PyErr_Format(PyExc_TypeError, "Invalid input!");
     }
     vectors = matrix_init(n, dim);
-    eigen_vectors = matrix_init(n,n);
     eigen_values = calloc(n, sizeof(double));
-    if(!vectors || !eigen_vectors || !eigen_values) { //not sure what to do
+    if(!eigen_values) {
         return PyErr_NoMemory();
     }
     pyList_to_matrix(py_vectors, vectors, dim, n);
@@ -167,10 +167,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     if (!eigen_vectors){
         return PyErr_NoMemory();
     }
-    eigen_values = get_diag(vectors,eigen_values, n);
-    if(!eigen_values){
-       return PyErr_NoMemory(); 
-    }
+    get_diag(vectors,eigen_values, n);
     print_Jacobi(eigen_vectors, eigen_values, n);
     free(eigen_values);
     free_2D(eigen_vectors);
