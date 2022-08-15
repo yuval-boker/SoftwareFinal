@@ -7,6 +7,10 @@ MAX_ITER = 300
 JACOBI_MAX_ITER = 100
 np.random.seed(0)
 
+def print_matrix(mat):
+    np.set_printoptions(precision=4)
+    print(mat)
+    
 def prepare():
     assert len(sys.argv) == 3, 'Invalid Input!'
     k = validity_check_k()
@@ -44,42 +48,28 @@ def get_goal(goal, data_array, n, dim):
 
 # add goal = spk (needs to get data matrix from c, and call kmeans_pp), goal = jacobi
 
+# implementation of k-means++, n = number of points, dim = dimension of each point,
+# init_centroids = array with the index of k points selected to be the initial centroids
+# min_dis = at first is a constant of infinity, after first iteration will be an np array of size n containing
+# the min distances of the points given from all of the centroids that have been chosen.
+# p = the probability to be selected of each point in points, at start the probability of each point is equal.
+# def k_means_pp(points, k):
+#         n, dim = points.shape
+#         init_centroids = []
+#         min_dis = np.inf
+#         p = None
+#         for j in range(k):  # initializing k centroids as in k-means++ initialization
+#             curr = np.random.choice(n, p=p)  # picking a random index of points provided
+#             init_centroids.append(curr)
+#             distances = np.power((points-points[curr]), 2).sum(axis=1)
+#             min_dis = np.minimum(distances, min_dis)
+#             p = np.divide(min_dis, min_dis.sum())
+#         res = spkmeans_capi.fit(k, n, dim, max_iter, eps,  points[init_centroids].tolist(), points.tolist())
+#         print(','.join([str(i) for i in pIndicies[init_centroids]]))  # prints the indices of observations chosen by
+#         # the K-means++ algorithm as the initial centroids.
+#         for centroid in res:  # prints the final centroids from the K-means algorithm executed in c
+#             print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in centroid))
 
-def distance_calc(column, index, auxiliary, points):
-    x = points - points.loc[index]
-    auxiliary[column] = np.sum(x * x, axis=1)
-
-
-def probability_calc(auxiliary):
-    total = auxiliary["min_D"].sum()
-    auxiliary["probability"] = auxiliary["min_D"]/total
-
-
-def kmeans_pp():
-    np.random.seed(0)
-    c = np.random.choice(n - 1, 1)[0]
-    distance_calc("min_D", c, auxiliary, points_matrix)
-    centroids_by_index.append(c)
-    centroids.append(points_list[c])
-    z = 1
-    while z < k:
-        curr_miu = centroids_by_index[z-1]
-        distance_calc("curr_D", curr_miu, auxiliary, points_matrix)
-        auxiliary["min_D"] = np.minimum(auxiliary["min_D"], auxiliary["curr_D"])
-        probability_calc(auxiliary)
-        tmp = np.random.choice(n, 1, p=auxiliary["probability"])[0]
-        centroids_by_index.append(tmp)
-        centroids.append(points_list[tmp])
-        z += 1
-
-
-# def main():
-#     k, goal, file = prepare()
-#     data_points, n, dim = process_file(file, k)
-#     data_array = data_points.to_numpy().flatten().tolist()
-#     get_goal(goal, data_array, n, dim)
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_points, n, dim = process_file(file, k)
