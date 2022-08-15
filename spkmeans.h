@@ -88,6 +88,6 @@ int get_diag(double const **mat, double *diag,int n);
  * C 
  */
 int is_num(char* arg);
-Info extractInfo(FILE* file); //changed to file pointer and not path
+Info extractInfo(FILE* file);
 int processFile(Info info, Point* points, FILE* file);
 void get_goal(char *goal, Point *points, int dim, int n);
