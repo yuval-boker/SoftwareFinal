@@ -84,7 +84,9 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     set_WAM(points, WAM, dim, n);
     py_WAM = matrix_to_PyList(WAM, n, n);
     free_2D(WAM);
+    printf("%s", "free1");
     free_data_points(n, points);
+    printf("%s", "free2");
     return py_WAM;
 }
 
