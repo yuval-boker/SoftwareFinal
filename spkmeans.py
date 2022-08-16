@@ -96,10 +96,8 @@ def k_means_pp(points, k):
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
-    print(data_array)
-    #gony
     try:
         get_goal(goal, data_array, n, dim, k)
-        except Exception as e:\
-            print(e, end="")
+    except Exception as e:
+        print(e, end="")
 

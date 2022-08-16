@@ -17,7 +17,7 @@
  * newPoints = sum of all vectors assigned to the cluster, instead of matrix of all vectors
  * centroid = current centroid vector
  */
-typedef struct{
+typedef struct Cluster{
     int count;
     double* newPoints;
     double* centroid;
