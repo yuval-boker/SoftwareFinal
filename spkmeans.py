@@ -93,7 +93,7 @@ if __name__ == '__main__':
     data_array, n, dim = process_file(file, k)
     print(data_array)
     try:
-    get_goal(goal, data_array, n, dim)
+    get_goal(goal, data_array, n, dim, k)
     except Exception as e:
         print(e, end="")
 

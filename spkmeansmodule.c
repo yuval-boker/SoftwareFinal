@@ -175,9 +175,6 @@ static PyObject* fit(PyObject *self, PyObject *args) {
 void free_objects(double** WAM, Point* points, int n){
     free_2D(WAM);
     free_data_points(n, points);
-    printf("All objects are free\n");
-    WAM = NULL;
-    points = NULL;
 }
 
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
@@ -255,7 +252,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     double  **eigen_vectors, **vectors;
     double *eigen_values;
     int n, dim;
-    PyObject *py_vectors, *py_values, *py_vectors, *py_tuple;
+    PyObject *py_vectors, *py_values, *py_tuple;
     if(!PyArg_ParseTuple(args, "Oii", &py_vectors, &n, &dim)){
         return NULL;
     }
