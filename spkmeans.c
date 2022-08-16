@@ -97,8 +97,10 @@ void free_memory(int k, int n, Point* points, Cluster* clusters) {
  * Deallocates the memory that was previously dynamically allocated 
  */
 void free_2D(double **matrix) {
-    free(matrix[0]);
-    free(matrix);
+    if(matrix){
+        free(matrix[0]);
+        free(matrix);
+    }
 }
 
 /*
