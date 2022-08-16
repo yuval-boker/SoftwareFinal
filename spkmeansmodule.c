@@ -70,6 +70,15 @@ PyObject* matrix_to_PyList(double **arr, int n, int k){
 /*
  * Return WAM as Python list 
  */
+
+static free_objects(double** WAM, Point* points, int n){
+    free_2D(WAM);
+    free_data_points(n, points);
+    printf("All objects are free\n");
+    printf("points pointer is: %p\n", points);
+    printf("WAM pointer is: %p\n", WAM);
+}
+
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
     double **WAM;
     Point *points;
@@ -79,14 +88,15 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
         return NULL;
     }
     points = allocate_mem(dim, n);
+    printf("points pointer is: %p\n", points);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
+    printf("WAM pointer is: %p\n", WAM);
     set_WAM(points, WAM, dim, n);
     py_WAM = matrix_to_PyList(WAM, n, n);
-    free_2D(WAM);
-    printf("%s", "free1");
-    free_data_points(n, points);
-    printf("%s", "free2");
+    free_objects(WAM, points, n);
+//    free_2D(WAM);
+//    free_data_points(n, points);
     return py_WAM;
 }
 
