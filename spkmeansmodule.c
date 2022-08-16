@@ -60,6 +60,7 @@ PyObject* matrix_to_PyList(double **arr, int n, int k){
     for(i = 0; i < n; i++){
         item = PyList_New(k);
         for(j = 0; j < k; j++){
+            printf("value: %f\n", arr[i][j]);
             PyList_SetItem(item, j, PyFloat_FromDouble(arr[i][j]));
         }
         PyList_SetItem(PyList, i, item);
