@@ -41,7 +41,7 @@ def process_file(file, k):
     data = pd.read_csv(file, header=None)
     n = data.shape[0]
     dim = data.shape[1]
-    data_array = data.to_numpy().flatten().tolist()
+    data_array = data.to_numpy().tolist()
     assert k < n, 'Invalid Input!'
     return data_array, n, dim
 
@@ -92,8 +92,8 @@ if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
     print(data_array)
-    # try:
+    try:
     get_goal(goal, data_array, n, dim)
-    # except Exception as e:
-    #     print(e, end="")
+    except Exception as e:
+        print(e, end="")
 

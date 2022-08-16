@@ -178,8 +178,6 @@ void free_objects(double** WAM, Point* points, int n){
     printf("All objects are free\n");
     WAM = NULL;
     points = NULL;
-    printf("points pointer is: %p\n", points);
-    printf("WAM pointer is: %p\n", WAM);
 }
 
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
@@ -191,16 +189,10 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
         return NULL;
     }
     points = allocate_mem(dim, n);
-    printf("points pointer is: %p\n", points);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
-    printf("WAM pointer is: %p\n", WAM);
     set_WAM(points, WAM, dim, n);
-    py_WAM = NULL;
     py_WAM = matrix_to_PyList(WAM, n, n);
-    py_list_res = PyList_New(1);
-    PyList_SetItem(py_list_res, 0, py_WAM);
-    printf("py_WAM: %p\n", py_WAM);
     free_objects(WAM, points, n);
     return py_WAM;
 }
