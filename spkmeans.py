@@ -88,8 +88,8 @@ if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
     print(data_array)
-    try:
-        get_goal(goal, data_array, n, dim)
-    except Exception as e:
-        print(ERROR, end="")
+    # try:
+    get_goal(goal, data_array, n, dim)
+    # except Exception as e:
+    #     print(e, end="")
 
