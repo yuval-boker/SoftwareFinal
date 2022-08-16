@@ -5,6 +5,7 @@ import spkmeans_capi
 
 MAX_ITER = 300
 JACOBI_MAX_ITER = 100
+ERROR = "An Error Has Occured"
 np.random.seed(0)
 
 # def print_matrix(mat):
@@ -50,7 +51,6 @@ def process_file(file, k):
 def get_goal(goal, data_array, n, dim):
     if goal == "wam":
         res = spkmeans_capi.get_WAM(data_array, n, dim)
-        print(type(res))
         for v in res:
             print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in v))
         # res = np.array(res).reshape(n, n)
@@ -91,4 +91,8 @@ def get_goal(goal, data_array, n, dim):
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
-    get_goal(goal, data_array, n, dim)
+    try:
+        get_goal(goal, data_array, n, dim)
+    except Exception as e:
+        print(ERROR, end="")
+
