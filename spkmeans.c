@@ -8,7 +8,6 @@ void print_double(double num) {
     printf("%.4f", num);
 }
 
-
 void print_row(double *row, int n) {
     int i;
     for (i = 0; i < n; i++) {
@@ -98,10 +97,8 @@ void free_memory(int k, int n, Point* points, Cluster* clusters) {
  * Deallocates the memory that was previously dynamically allocated 
  */
 void free_2D(double **matrix) {
-    if (matrix != NULL) {
-        free(matrix[0]);
-        free(matrix);
-    }
+    free(matrix[0]);
+    free(matrix);
 }
 
 /*
@@ -139,18 +136,17 @@ void set_WAM(Point *points, double **matrix, int dim, int n) {
  * Allocates a matrix dynamically (as an array of arrays)
  * The matrix will be stored in memory continuously, as shown in class 
  */
-double **matrix_init(int n, int m) {
-    double *p;
-    double **a;
+double **matrix_init(int row, int col){
+    double *content, **matrix;
     int i;
-    p = (double*)calloc(n*m, sizeof(double));
-    Mem_Assertion(p != NULL);
-    a = (double**) calloc(n, sizeof(double*));
-    Mem_Assertion(a != NULL);
-    for(i = 0; i < n; i++){
-        a[i] = p+i*m;
+    content = (double*)calloc(row*col, sizeof(double));
+    Mem_Assertion(content != NULL);
+    matrix = (double**) calloc(row, sizeof(double*));
+    Mem_Assertion(matrix != NULL);
+    for (i = 0; i < row; i++){
+        matrix[i] = content + (i * col);
     }
-    return a;
+    return matrix;
 }
 
 /*

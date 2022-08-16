@@ -106,6 +106,7 @@ Cluster* createClusters(int dim, PyObject *centroids, int k) {
     return clusters;
 }
 
+<<<<<<< HEAD
 /*
  * Transforms array of doubles to 1D Pylist.
  */
@@ -118,6 +119,19 @@ PyObject *arr_to_PyList(double *vectors, int n) {
     }
     for (i = 0; i < n; i++) {
         PyList_SetItem(PyList, i, PyFloat_FromDouble(vectors[i]));
+=======
+PyObject* matrix_to_PyList(double **arr, int n, int k){
+    Py_ssize_t i, j;
+    PyObject *PyList = PyList_New(n);
+    PyObject *item;
+    for(i = 0; i < n; i++){
+        item = PyList_New(k);
+        for(j = 0; j < k; j++){
+            printf("value: %f\n", arr[i][j]);
+            PyList_SetItem(item, j, PyFloat_FromDouble(arr[i][j]));
+        }
+        PyList_SetItem(PyList, i, item);
+>>>>>>> 09500f46168fe34bc6c90dba46ee2de4ed01e46d
     }
     return PyList;
 }
@@ -171,21 +185,43 @@ static PyObject* fit(PyObject *self, PyObject *args) {
 /*
  * Return WAM as Python list 
  */
+
+void free_objects(double** WAM, Point* points, int n){
+    free_2D(WAM);
+    free_data_points(n, points);
+    printf("All objects are free\n");
+    WAM = NULL;
+    points = NULL;
+    printf("points pointer is: %p\n", points);
+    printf("WAM pointer is: %p\n", WAM);
+}
+
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
     double **WAM;
     Point *points;
-    PyObject *data_points, *py_WAM;
+    PyObject *data_points, *py_WAM, *py_list_res;
     int n, dim;
     if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
     }
     points = allocate_mem(dim, n);
+    printf("points pointer is: %p\n", points);
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
+    printf("WAM pointer is: %p\n", WAM);
     set_WAM(points, WAM, dim, n);
+<<<<<<< HEAD
     py_WAM = matrix_to_PyList(WAM, n, n);
     free_2D(WAM);
     free_data_points(n, points);
+=======
+    py_WAM = NULL;
+    py_WAM = matrix_to_PyList(WAM, n, n);
+    py_list_res = PyList_New(1);
+    PyList_SetItem(py_list_res, 0, py_WAM);
+    printf("py_WAM: %p\n", py_WAM);
+    free_objects(WAM, points, n);
+>>>>>>> 09500f46168fe34bc6c90dba46ee2de4ed01e46d
     return py_WAM;
 }
 
@@ -268,17 +304,24 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     free(eigen_values);
     free_2D(eigen_vectors);
     free_2D(vectors);
+<<<<<<< HEAD
     py_tuple = Py_BuildValue("OO", py_values, py_vectors);
     Py_DECREF(py_values);
     Py_DECREF(py_vectors);
     return py_tuple;
+=======
+    return 0;
+>>>>>>> 09500f46168fe34bc6c90dba46ee2de4ed01e46d
 }
 
 #define FUNC(_flag, _name, _docstring) { #_name, (PyCFunction)_name, _flag, PyDoc_STR(_docstring) }
 
 static PyMethodDef _methods[] = {
+<<<<<<< HEAD
         FUNC(METH_VARARGS, fit, "fit"),
         FUNC(METH_VARARGS, get_T, "get T"),
+=======
+>>>>>>> 09500f46168fe34bc6c90dba46ee2de4ed01e46d
         FUNC(METH_VARARGS, get_WAM, "get WAM"),
         FUNC(METH_VARARGS, get_DDG, "get DDG"),
         FUNC(METH_VARARGS, get_L_norm, "get L_norm"),

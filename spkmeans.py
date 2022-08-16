@@ -5,6 +5,7 @@ import spkmeans_capi
 
 MAX_ITER = 300
 JACOBI_MAX_ITER = 100
+ERROR = "An Error Has Occured"
 np.random.seed(0)
 
 
@@ -48,16 +49,10 @@ def process_file(file, k):
 def get_goal(goal, data_array, n, dim, k):
     if goal == "wam":
         res = spkmeans_capi.get_WAM(data_array, n, dim)
-        print(type(res))
-        for v in res:
-            print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in v))
-        # res = np.array(res).reshape(n, n)
     elif goal == "ddg":
         res = spkmeans_capi.get_DDG(data_array, n, dim)
-        # res = np.array(res).reshape(n, n)
     elif goal == "lnorm":
         res = spkmeans_capi.get_L_norm(data_array, n, dim)
-        # res = np.array(res).reshape(n, n)
     elif goal == "jacobi":
         eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
         eigen_vectors = np.array(eigen_vectors).reshape(n,n)
@@ -96,4 +91,9 @@ def k_means_pp(points, k):
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
-    get_goal(goal, data_array, n, dim, k)
+    print(data_array)
+    # try:
+    get_goal(goal, data_array, n, dim)
+    # except Exception as e:
+    #     print(e, end="")
+
