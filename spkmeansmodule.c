@@ -53,13 +53,13 @@ PyObject* clusters_to_PyList(Cluster *clusters, int k, int dim){
 }
 
 
-PyObject* matrix_to_PyList(double **arr, int n){
+PyObject* matrix_to_PyList(double **arr, int n, int k){
     Py_ssize_t i, j;
-    PyObject *PyList = PyList_New((Py_ssize_t)(n));
+    PyObject *PyList = PyList_New(n);
     PyObject *item;
     for(i = 0; i < n; i++){
-        item = PyList_New((Py_ssize_t)(n));
-        for(j = 0; j < n; j++){
+        item = PyList_New(k);
+        for(j = 0; j < k; j++){
             PyList_SetItem(item, j, PyFloat_FromDouble(arr[i][j]));
         }
         PyList_SetItem(PyList, i, item);
@@ -82,12 +82,9 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     create_matrix(data_points, points, dim, n);
     WAM = matrix_init(n, n);
     set_WAM(points, WAM, dim, n);
-    py_WAM = matrix_to_PyList(WAM, n);
+    py_WAM = matrix_to_PyList(WAM, n, n);
     free_2D(WAM);
     free_data_points(n, points);
-    if (py_WAM == NULL){
-        printf("gony");
-    }
     return py_WAM;
 }
 
@@ -108,7 +105,7 @@ static PyObject *get_DDG(PyObject *self, PyObject *args) {
     DDG = matrix_init(n, n);
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
-    py_DDG = matrix_to_PyList(DDG, n);
+    py_DDG = matrix_to_PyList(DDG, n, n);
     free_2D(WAM);
     free_2D(DDG);
     free_data_points(n, points);
@@ -134,7 +131,7 @@ static PyObject *get_L_norm(PyObject *self, PyObject *args) {
     set_WAM(points, WAM, dim, n);
     set_DDG(WAM, DDG, n);
     set_L_norm(WAM, DDG, L_norm, n);
-    py_L_norm = matrix_to_PyList(L_norm, n);
+    py_L_norm = matrix_to_PyList(L_norm, n, n);
     free_2D(WAM);
     free_2D(DDG);
     free_2D(L_norm);
@@ -169,13 +166,11 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     free(eigen_values);
     free_2D(eigen_vectors);
     free_2D(vectors);
-    //return? 
+    return 0;
 }
 #define FUNC(_flag, _name, _docstring) { #_name, (PyCFunction)_name, _flag, PyDoc_STR(_docstring) }
 
 static PyMethodDef _methods[] = {
-//        FUNC(METH_VARARGS, fit_kmeans, "run kmeans"),
-//        FUNC(METH_VARARGS, get_T, "get T"),
         FUNC(METH_VARARGS, get_WAM, "get WAM"),
         FUNC(METH_VARARGS, get_DDG, "get DDG"),
         FUNC(METH_VARARGS, get_L_norm, "get L_norm"),
