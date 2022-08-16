@@ -7,7 +7,7 @@ void print_double(double num) {
         num = 0.0;
     printf("%.4f", num);
 }
-
+//try
 
 void print_row(double *row, int n) {
     int i;
