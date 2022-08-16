@@ -47,24 +47,29 @@ def process_file(file, k):
 
 
 def get_goal(goal, data_array, n, dim, k):
-    if goal == "wam":
-        res = spkmeans_capi.get_WAM(data_array, n, dim)
-    elif goal == "ddg":
-        res = spkmeans_capi.get_DDG(data_array, n, dim)
-    elif goal == "lnorm":
-        res = spkmeans_capi.get_L_norm(data_array, n, dim)
-    elif goal == "jacobi":
-        eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
-        eigen_vectors = np.array(eigen_vectors).reshape(n,n)
-        #print them
-    elif goal == "spk":
+    res = 0
+    if goal == "spk":
         T, k = spkmeans_capi.get_T(data_array, n, dim, k)
         T = np.array(T).reshape(n,k)
         k_means_pp(T, k)
+    elif goal == "jacobi":
+        eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
+        eigen_vectors = np.array(eigen_vectors).reshape(n,n)
+        print_list([eigen_values])
+        print()
+        print_list(eigen_vectors.T)
     else:
-        print("Invalid Input!")
-        exit()
-    print_list(res)
+        if goal == "wam":
+            res = spkmeans_capi.get_WAM(data_array, n, dim)
+        elif goal == "ddg":
+            res = spkmeans_capi.get_DDG(data_array, n, dim)
+        elif goal == "lnorm":
+            res = spkmeans_capi.get_L_norm(data_array, n, dim)
+        else:
+            print("Invalid Input!")
+            exit()
+        res = np.array(res).reshape(n, n)
+        print_list(res)
 
 
 # implementation of k-means++, n = number of points, dim = dimension of each point,
@@ -93,7 +98,7 @@ if __name__ == '__main__':
     data_array, n, dim = process_file(file, k)
     print(data_array)
     try:
-    get_goal(goal, data_array, n, dim, k)
-    except Exception as e:
-        print(e, end="")
+        get_goal(goal, data_array, n, dim, k)
+        except Exception as e:\
+            print(e, end="")
 
