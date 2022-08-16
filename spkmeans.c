@@ -120,10 +120,10 @@ void set_WAM(Point *points, double **matrix, int dim, int n) {
 double **matrix_init(int row, int col){
     double *content, **matrix;
     int i;
-    content = (double*)calloc(n*m, sizeof(double));
-    Mem_Assertion(p != NULL);
-    matrix = (double**) calloc(n, sizeof(double*));
-    Mem_Assertion(a != NULL);
+    content = (double*)calloc(row*col, sizeof(double));
+    Mem_Assertion(content != NULL);
+    matrix = (double**) calloc(row, sizeof(double*));
+    Mem_Assertion(matrix != NULL);
     for (i = 0; i < row; i++){
         matrix[i] = content + (i * col);
     }

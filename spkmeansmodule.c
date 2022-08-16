@@ -85,7 +85,7 @@ void free_objects(double** WAM, Point* points, int n){
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
     double **WAM;
     Point *points;
-    PyObject *data_points, *py_WAM;
+    PyObject *data_points, *py_WAM, *py_list_res;
     int n, dim;
     if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
@@ -98,6 +98,8 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     set_WAM(points, WAM, dim, n);
     py_WAM = NULL;
     py_WAM = matrix_to_PyList(WAM, n, n);
+    py_list_res = PyList_New(1);
+    PyList_SetItem(py_list_res, 0, py_WAM);
     printf("py_WAM: %p\n", py_WAM);
     free_objects(WAM, points, n);
     return py_WAM;
