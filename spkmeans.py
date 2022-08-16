@@ -7,9 +7,7 @@ MAX_ITER = 300
 JACOBI_MAX_ITER = 100
 np.random.seed(0)
 
-# def print_matrix(mat):
-#     np.set_printoptions(precision=4)
-#     print(mat)
+
 def double_to_str(num):
     """
     Print a double with 4 point persicion,
@@ -21,8 +19,8 @@ def double_to_str(num):
 
 
 def print_list(lst):
-    for i, vec in enumerate(lst):
-        print(','.join(map(double_to_str, vec)), end='' if i == len(lst)-1 else '\n')
+    for row in lst:
+            print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in row))
 
 def prepare():
     assert len(sys.argv) == 4, 'Invalid Input!'
@@ -47,7 +45,7 @@ def process_file(file, k):
     return data_array, n, dim
 
 
-def get_goal(goal, data_array, n, dim):
+def get_goal(goal, data_array, n, dim, k):
     if goal == "wam":
         res = spkmeans_capi.get_WAM(data_array, n, dim)
         print(type(res))
@@ -61,34 +59,41 @@ def get_goal(goal, data_array, n, dim):
         res = spkmeans_capi.get_L_norm(data_array, n, dim)
         # res = np.array(res).reshape(n, n)
     elif goal == "jacobi":
-        spkmeans_capi.run_jacobi(data_array, n, dim)
+        eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
+        eigen_vectors = np.array(eigen_vectors).reshape(n,n)
+        #print them
+    elif goal == "spk":
+        T, k = spkmeans_capi.get_T(data_array, n, dim, k)
+        T = np.array(T).reshape(n,k)
+        k_means_pp(T, k)
+    else:
+        print("Invalid Input!")
+        exit()
     print_list(res)
 
-# add goal = spk (needs to get data matrix from c, and call kmeans_pp), goal = jacobi
 
 # implementation of k-means++, n = number of points, dim = dimension of each point,
 # init_centroids = array with the index of k points selected to be the initial centroids
 # min_dis = at first is a constant of infinity, after first iteration will be an np array of size n containing
 # the min distances of the points given from all of the centroids that have been chosen.
 # p = the probability to be selected of each point in points, at start the probability of each point is equal.
-# def k_means_pp(points, k):
-#         n, dim = points.shape
-#         init_centroids = []
-#         min_dis = np.inf
-#         p = None
-#         for j in range(k):  # initializing k centroids as in k-means++ initialization
-#             curr = np.random.choice(n, p=p)  # picking a random index of points provided
-#             init_centroids.append(curr)
-#             distances = np.power((points-points[curr]), 2).sum(axis=1)
-#             min_dis = np.minimum(distances, min_dis)
-#             p = np.divide(min_dis, min_dis.sum())
-#         res = spkmeans_capi.fit(k, n, dim, max_iter, eps,  points[init_centroids].tolist(), points.tolist())
-#         print(','.join([str(i) for i in pIndicies[init_centroids]]))  # prints the indices of observations chosen by
-#         # the K-means++ algorithm as the initial centroids.
-#         for centroid in res:  # prints the final centroids from the K-means algorithm executed in c
-#             print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in centroid))
+def k_means_pp(points, k):
+        n, dim = points.shape
+        init_centroids = []
+        min_dis = np.inf
+        p = None
+        for j in range(k):  # initializing k centroids as in k-means++ initialization
+            curr = np.random.choice(n, p=p)  # picking a random index of points provided
+            init_centroids.append(curr)
+            distances = np.power((points-points[curr]), 2).sum(axis=1)
+            min_dis = np.minimum(distances, min_dis)
+            p = np.divide(min_dis, min_dis.sum())
+        res = spkmeans_capi.fit(k, n, dim, points[init_centroids].tolist(), points.tolist())
+        print(','.join([str(i) for i in init_centroids]))  # prints the indices of observations chosen by
+        # the K-means++ algorithm as the initial centroids.
+        print_list(res) # prints the final centroids from the K-means algorithm executed in c
 
 if __name__ == '__main__':
     k, goal, file = prepare()
     data_array, n, dim = process_file(file, k)
-    get_goal(goal, data_array, n, dim)
+    get_goal(goal, data_array, n, dim, k)

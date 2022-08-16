@@ -40,16 +40,18 @@ void print_matrix(double **array, int n, int dim) {
 /*
  * Prints the eigenvalues as the first line, second line onward is the corresponding eigenvectors
  */
-void print_Jacobi(double **eign_vectors, double *eign_values, int n){ //may change const
-    print_row(eign_values, n);
+void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
+    print_row(eigen_values, n);
     printf("\n");
-    print_matrix(eign_vectors, n, n);
+    print_matrix(eigen_vectors, n, n);
 }
 
 /*
  * Allocates memory for n data points stored as matrix of Point 
+ * input: dimension and size
+ * output: an empty matrix of size n*m
  */
-Point* allocate_mem(int dim, int n){
+Point* allocate_mem(int dim, int n) {
     int i;
     double* v;
     Point* points = (Point*)calloc(n, sizeof(Point));
@@ -63,9 +65,9 @@ Point* allocate_mem(int dim, int n){
 }
 
 /*
- * Deallocates the memory that was previously allocated 
+ * Frees points memory, used before returning the output to Python
  */
-void free_data_points(int n, Point* points){
+void free_data_points(int n, Point* points) {
     int i;
     if (points != NULL){
         for (i = 0; i < n; i++){
@@ -76,9 +78,26 @@ void free_data_points(int n, Point* points){
 }
 
 /*
+ * Frees clusters memory, used before returning the output to Python
+ */
+void free_clusters(int k, Cluster* clusters) {
+    int j;
+    for (j = 0; j < k; j++){
+        free(clusters[j].newPoints);
+        free(clusters[j].centroid);
+    }
+    free(clusters);
+}
+
+void free_memory(int k, int n, Point* points, Cluster* clusters) {
+    free_data_points(n, points);
+    free_clusters(k, clusters);
+}
+
+/*
  * Deallocates the memory that was previously dynamically allocated 
  */
-void free_2D(double **matrix){
+void free_2D(double **matrix) {
     if (matrix != NULL) {
         free(matrix[0]);
         free(matrix);
@@ -120,7 +139,7 @@ void set_WAM(Point *points, double **matrix, int dim, int n) {
  * Allocates a matrix dynamically (as an array of arrays)
  * The matrix will be stored in memory continuously, as shown in class 
  */
-double **matrix_init(int n, int m){
+double **matrix_init(int n, int m) {
     double *p;
     double **a;
     int i;
@@ -137,7 +156,7 @@ double **matrix_init(int n, int m){
 /*
  * Sums the values in a given matrix row 
  */
-double sum_row(double **matrix, int row, int n){
+double sum_row(double **matrix, int row, int n) {
     int i;
     double res = 0.0;
     for (i = 0; i < n; i++){
@@ -150,7 +169,7 @@ double sum_row(double **matrix, int row, int n){
 /*
  * Tranforms data structure from array of points to 2D matrix for design reasons 
  */
-void data_to_matrix(Point *points, double **matrix, int n, int dim){
+void data_to_matrix(Point *points, double **matrix, int n, int dim) {
     int i, j;
     for (i = 0; i < n; i++){
         for (j = 0; j < dim; j++){
@@ -175,7 +194,7 @@ double **I_matrix(int n){
 /*
  * Finds max off diagonal element's indices and updates i_val and j_val accordingly
  */
-int find_max_indices_off_diag(double **mat, int *i_val, int *j_val, int n){
+int find_max_indices_off_diag(double **mat, int *i_val, int *j_val, int n) {
     int i,j;
     double max_val = 0.0;
     for(i = 0; i < n ; i++){
@@ -205,7 +224,7 @@ double sign(double num){
  * 1. http://phys.uri.edu/nigh/NumRec/bookfpdf/f11-1.pdf
  * 2. https://github.com/mateuv/MetodosNumericos/blob/master/python/NumericalMethodsInEngineeringWithPython/jacobi.py
  */
-int transform_matrix(double **mat, double **v, int n, int i, int j){
+int transform_matrix(double **mat, double **v, int n, int i, int j) {
     int r;
     double tmp1, tmp2, theta, t, c, s;
     theta = (mat[j][j] - mat[i][i])/(2 * mat[i][j]);
@@ -269,7 +288,7 @@ double **jacobi(double **A, int n) {
         find_max_indices_off_diag(A, &i, &j, n);
         transform_matrix(A, V, n, i, j);
         off_A_prime = off_square(A, n);
-        if((l != 0) && ((off_A - off_A_prime) <= EPSILON_J)){
+        if((l != 0) && ((off_A - off_A_prime) <= EPSILON_J)) {
             return V;
         }
         off_A = off_A_prime;
@@ -281,7 +300,7 @@ double **jacobi(double **A, int n) {
 /*
 * Stores given matrix diagonal values in a 1D array
 */
-void get_diag(double **mat, double *diag, int n){
+void get_diag(double **mat, double *diag, int n) {
     int i;
     for(i = 0; i < n; i++){
         diag[i] = mat[i][i];
@@ -290,62 +309,226 @@ void get_diag(double **mat, double *diag, int n){
 
 /** EIGENGAP HEURISTIC **/
 /*
-* Given a EignData array sorts inplace by eignvalues in decreasing order.
+* Given a EigenData array sorts inplace by eigenvalues in decreasing order.
 * we used this reference:
 * https://www.javatpoint.com/c-program-to-sort-the-elements-of-an-array-in-descending-order
 */
-void sort(EignData eign_arr[], int n){
+void sort(EigenData eigen_arr[], int n) {
     int i, j;
-    EignData temp;
+    EigenData temp;
     for(i = 0; i < n; i++){
         for(j = i + 1; j < n; j++){
-            if(eign_arr[i].val < eign_arr[j].val){
-                temp = eign_arr[i];
-                eign_arr[i] = eign_arr[j];
-                eign_arr[j] = temp;
+            if(eigen_arr[i].val < eigen_arr[j].val) {
+                temp = eigen_arr[i];
+                eigen_arr[i] = eigen_arr[j];
+                eigen_arr[j] = temp;
             }
         }
     }
 }
 
 /*
- * Given an n eignvectors 2D array and a 1D array of n corresponding eignvalues,
- * creates a new 1D EignData (contains eignvalue it's eignvector) array
- * which is decreasingly ordered by eignvalues and returns the new array.
+ * Given an n eigenvectors 2D array and a 1D array of n corresponding eigenvalues,
+ * creates a new 1D EigenData (contains eigenvalue it's eigenvector) array
+ * which is decreasingly ordered by eigenvalues and returns the new array.
  */
-EignData *create_sorted_eign_arr(double **eign_vectors, double const *eign_values, int n){
+EigenData *create_sorted_eigen_arr(double **eigen_vectors, double *eigen_values, int n) {
     int i;
-    EignData* eign_arr =(EignData*)calloc(n, sizeof(EignData));
-    Mem_Assertion(eign_arr != NULL);
+    EigenData* eigen_arr =(EigenData*)calloc(n, sizeof(EigenData));
+    Mem_Assertion(eigen_arr != NULL);
     for(i = 0; i < n; i++){
-        eign_arr[i].val = eign_values[i];
-        eign_arr[i].vector = eign_vectors[i]; //check with goni that its not &
+        eigen_arr[i].val = eigen_values[i];
+        eigen_arr[i].vector = eigen_vectors[i];
     }
-    sort(eign_arr, n);
-    return eign_arr;
+    sort(eigen_arr, n);
+    return eigen_arr;
 }
 
 /*
- * Given an array of n EignData elements (each element contains eignvalue it's eignvector)
+ * Given an array of n EigenData elements (each element contains eigenvalue it's eigenvector)
  * implements eigengap heuristic as described in 1.3 and returns k.
  */
-int eigngap(EignData *eign_arr, int n){
+int eigengap(EigenData *eigen_arr, int n) {
     int i, max_i = 0;
     double curr_delta, max_delta = 0.0;
     for(i = 0; i < (n / 2); i++){
-        curr_delta = fabs(eign_arr[i].val - eign_arr[i + 1].val);
+        curr_delta = fabs(eigen_arr[i].val - eigen_arr[i + 1].val);
         if(curr_delta > max_delta){
             max_delta = curr_delta;
-            max_i = i + 1; /* i starts from 1 in eigngap */
+            max_i = i + 1; /* i starts from 1 in eigengap */
         }
     }
     return max_i;
 }
 
+/** SPK **/
+/*
+ * Creates U, an nxk matrix containing the first k columns of sorted Lnorm,
+ * Returns U
+ */
+double **create_U(EigenData *eigen_arr, int n, int k) {
+    int i, j;
+    double **U;
+    U = matrix_init(n, k);
+    for(j = 0; j < k; j++){
+        for(i = 0; i < n; i++){
+            U[i][j] = eigen_arr[j].vector[i];
+        }
+    }
+    return U;
+}
+
+/*
+ * Given U, this function renormalizes each of U’s rows to have unit length
+ * and thus creates T as described in step 5 of The Normalized Spectral Clustering Algorithm
+ */
+void normalize_U(double **U, int n, int k) {
+    int i, j;
+    double sum;
+    for(i = 0; i < n; i++){
+        sum = 0.0;
+        for(j = 0; j < k; j++){
+            sum += pow(U[i][j], 2);
+        }
+        sum = sqrt(sum);
+        for(j = 0; j < k; j++){
+            U[i][j] = U[i][j] / (sum);
+        }
+    }
+}
+/** KMEANS **/
+/*
+ * Computes the distance between the given point and the given centroid
+ * input: point, centroid, dimension
+ * output: distance, double  
+ */
+double distance(Point* point1, const double* centroid, int dim){
+    int i;
+    double sum, p;
+    sum = 0;
+    for (i = 0; i < dim; i++){
+        p = point1->vector[i] - *(centroid + i);
+        sum += p*p;
+    }
+    return sqrt(sum);
+}
+
+/*
+ * Finds the closest cluster to the given point
+ * input: point, list of clusters, dimension, k
+ * output: index of the required cluster, int  
+ */
+int min_distance(Point* point, Cluster* clusters, int dim, int k){
+    int min_index, i;
+    double min_val, curr;
+    min_index = 0;
+    min_val = distance(point, clusters[0].centroid, dim); /* define the distance from the first cluster as min_val */
+    for (i = 1; i < k; i++){
+        curr = distance(point, clusters[i].centroid, dim);
+        if (curr < min_val){
+            min_val = curr;
+            min_index = i;
+        }
+    }
+    return min_index;
+}
+
+/*
+ * Compute the euclidean norm for KMEANS
+ */
+double euclidean_norm(const double* vector, int dim){
+    int i;
+    double result,p;
+    result = 0;
+    for (i = 0; i < dim; i++){
+        p = vector[i];
+        result += p*p;
+    }
+    return sqrt(result);
+}
+
+/*
+ * Add the given point to the given cluster 
+ * The insert operation is implemented by adding each coordinate to its adequate index in new_points vector
+ * input: point, cluster, dimension
+ */
+void add_point(Point* point, Cluster* cluster, int dim){
+    int i;
+    for (i = 0; i < dim; i++) {
+        cluster->newPoints[i] += point->vector[i];
+    }
+    cluster->count += 1; /* increase the number of points in the given cluster by 1 */ 
+}
+/*
+ * Update the centroid of the given cluster by computing the average value of each coordinate in new_points
+ * Check convergence
+ * input: cluster, dimension, an empty vector used for holding the result of the computation
+ * output: indicator for convergence, int
+ */
+int centroid_update(Cluster* cluster, int dim, double *tmp_vector){
+    int has_changed, i, l;
+    double norm_check;
+    has_changed = 1;
+    if (cluster->count == 0){
+        return 1;
+    }
+    for (i = 0; i < dim; i++) {
+        tmp_vector[i] = cluster->newPoints[i]/cluster->count;
+    }
+    norm_check = euclidean_norm(cluster->centroid, dim) - euclidean_norm(tmp_vector, dim);
+    if (norm_check >= EPS || norm_check <= -EPS){ //?
+        has_changed = 0;
+    }
+    for (l = 0; l < dim; l++) {
+        cluster->centroid[l] = tmp_vector[l];
+        cluster->newPoints[l] = 0;
+    }
+    cluster-> count = 0;
+    return has_changed;
+}
+
+/*
+ * Update the centroids of the clusters, and initialize count and new_points for each cluster
+ * Called at the end of each iteration in Kmeans
+ * input: list of clusters, k, dimension
+ * output: indicator for convergence, int
+ */
+int clusters_update(Cluster* clusters, int k, int dim) {
+    int changed, i, epsilon_indicator;
+    double *tmp_vector;
+    changed = 1;
+    tmp_vector = (double *) calloc(dim, sizeof(double)); /* Create a temporary vector to hold the new values before assigning them to the centroid */
+    Mem_Assertion(tmp_vector != NULL);
+    for (i = 0; i < k; i++) {
+        epsilon_indicator = centroid_update(&clusters[i], dim, tmp_vector);
+        changed = ((changed) && (epsilon_indicator));
+    }
+    free(tmp_vector); /* free 'tmp_vector' */
+    return changed;
+}
+
+/*
+ * kmeans algorithem implementaion
+ * input: n, clusters = list of clusters, points = list of data points, dim = dimension, k
+ */
+void kmeans(int n, Cluster* clusters, Point* points, int dim, int k) {
+    int epsilon_check, iter, i, index;
+    epsilon_check = 0; 
+    /* epsilon_check is an identicator that has a value of 1 iff the euclidean norm of each centroids doesn't change by more then epsilon. */
+    iter = 0; /* iterations counter */
+    while ((iter < MAX_ITER) && (1 - epsilon_check)) {
+        for (i = 0; i < n; i++) {
+            index = min_distance(&points[i], clusters, dim, k);
+            add_point(&points[i], &clusters[index], dim);
+        }
+        epsilon_check = clusters_update(clusters, k, dim);
+        iter++;
+    }
+}
 /*
  * Creates WAM using points 
  */
-double **create_WAM(Point *points, int dim, int n){
+double **create_WAM(Point *points, int dim, int n) {
     double **matrix;
     matrix = matrix_init(n, n);             /* WAM ∈ R^(n×n) */
     set_WAM(points, matrix, dim, n);
@@ -355,7 +538,7 @@ double **create_WAM(Point *points, int dim, int n){
 /*
  * Sets DDG using WAM
  */
-void set_DDG(double **WAM, double **matrix, int n){
+void set_DDG(double **WAM, double **matrix, int n) {
     int i;
     for (i = 0; i < n; i++){
         matrix[i][i] = sum_row(WAM, i, n);
@@ -365,7 +548,7 @@ void set_DDG(double **WAM, double **matrix, int n){
 /*
  * Creates DDG using WAM creation function 
  */
-double **create_DDG(Point *points, int dim, int n){
+double **create_DDG(Point *points, int dim, int n) {
     double **matrix_ddg, **matrix_wam;
     matrix_wam = create_WAM(points, dim, n);
     matrix_ddg = matrix_init(n, n);            /* DDG ∈ R^(n×n) */
@@ -391,7 +574,7 @@ double *process_DDG(double **DDG, int n){
 /*
  * Sets l_norm using WAM and DDG
  */
-void set_L_norm(double **WAM, double **DDG, double **L_norm, int n){
+void set_L_norm(double **WAM, double **DDG, double **L_norm, int n) {
     double *D;
     int i, j;
     D = process_DDG(DDG, n);
@@ -427,7 +610,7 @@ double **create_L_norm(Point *points, int dim, int n) {
  * Prints a matrix where The first line contains the eigenvalues,
  * and the second line onward contains the corresponding eigenvectors 
  */
-void create_Jacobi(Point *points,int dim, int n){
+void create_Jacobi(Point *points,int dim, int n) {
     double **A, **eigen_vectors;
     double *eigen_values;
     A = matrix_init(n,dim);
@@ -441,11 +624,34 @@ void create_Jacobi(Point *points,int dim, int n){
     free_2D(eigen_vectors);
     free_2D(A);
 }
+/*
+ * This function is used only for "spk" goal from Python.
+ * Creates T matrix according to the instructions presented in the project.
+ * Calculates and sets k using eigengap heuristic if given k value is zero.
+ */
+double **create_T(Point *points, int dim, int n, int *k) {
+    double **matrix_L_norm, **U, **eigen_vectors;
+    double *eigen_values;
+    EigenData *eigen_arr;
+    matrix_L_norm = create_L_norm(points, dim, n);
+    eigen_vectors = jacobi(matrix_L_norm, n);
+    eigen_values = calloc(n, sizeof(double));
+    Mem_Assertion(eigen_values != NULL);
+    get_diag(matrix_L_norm, eigen_values, n);
+    eigen_arr = create_sorted_eigen_arr(eigen_vectors, eigen_values, n);
+    if(*k == 0){
+        *k = eigengap(eigen_arr, n);
+    }
+    U = create_U;
+    normalize_U(U, n, *k);
+    free(eigen_values);
+    return U;
+}
 
 /*
  * Returns n and dim 
  */
-Info extractInfo(FILE* file){
+Info extractInfo(FILE* file) {
     char c;
     int dim, n;
     Info inf;
@@ -469,9 +675,9 @@ Info extractInfo(FILE* file){
 /*
  * Stores data from file in points 
  */
-int processFile(Info info, Point* points, FILE* file){
+int processFile(Info info, Point* points, FILE* file) {
     int i,j;
-    double coordinate; //changed defenition at start, was inside loop.
+    double coordinate; 
     for(i = 0; i < info.n; i++){
         for(j = 0; j < info.dim; j++){
             fscanf(file, "%lf", &coordinate);
@@ -486,7 +692,7 @@ int processFile(Info info, Point* points, FILE* file){
 /*
  * Runs code according to user input 
  */
-void get_goal(char *goal, Point *points, int dim, int n){
+void get_goal(char *goal, Point *points, int dim, int n) {
     double **tmp;
     if(strcmp(goal, "wam") == 0) {
         tmp = create_WAM(points, dim, n);
@@ -515,7 +721,7 @@ int main(int argc, char *argv[]) {
     FILE* fp;
     Info info;
     Point* points;
-    if (argc != 2) { //changed from 4 to 2: we get goal and file!
+    if (argc != 2) { 
         printf("Invalid Input!\n");
         exit(1);
     }
@@ -530,7 +736,7 @@ int main(int argc, char *argv[]) {
     dim = info.dim;
     n = info.n;
     points = allocate_mem(dim, n);
-    rewind(fp); //added by Dana
+    rewind(fp); 
     processFile(info, points, fp);
     get_goal(goal, points, dim, n);
     return 0;
