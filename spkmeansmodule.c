@@ -96,7 +96,9 @@ static PyObject *get_WAM(PyObject *self, PyObject *args) {
     WAM = matrix_init(n, n);
     printf("WAM pointer is: %p\n", WAM);
     set_WAM(points, WAM, dim, n);
+    py_WAM = NULL;
     py_WAM = matrix_to_PyList(WAM, n, n);
+    printf("py_WAM: %p\n", py_WAM);
     free_objects(WAM, points, n);
     return py_WAM;
 }
