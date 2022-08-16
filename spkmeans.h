@@ -27,16 +27,16 @@ typedef struct{
  * Point definition:
  * vector = the point's data vector
  */
-typedef struct{
+typedef struct Point{
     double* vector;
 } Point;
 
-typedef struct{
+typedef struct Info{
     int n;
     int dim;
 } Info;
 
-typedef struct{
+typedef struct EigenData{
     double* vector;
     double val;
 } EigenData;

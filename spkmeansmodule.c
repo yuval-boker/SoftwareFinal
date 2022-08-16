@@ -180,7 +180,7 @@ void free_objects(double** WAM, Point* points, int n){
 static PyObject *get_WAM(PyObject *self, PyObject *args) {
     double **WAM;
     Point *points;
-    PyObject *data_points, *py_WAM, *py_list_res;
+    PyObject *data_points, *py_WAM;
     int n, dim;
     if (!PyArg_ParseTuple(args, "Oii", &data_points, &n, &dim)) {
         return NULL;
@@ -256,9 +256,6 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     if(!PyArg_ParseTuple(args, "Oii", &py_vectors, &n, &dim)){
         return NULL;
     }
-    // if(!PyList_Check(py_vectors)){
-    //     return PyErr_Format(PyExc_TypeError, "Invalid input!");
-    // }
     vectors = matrix_init(n, dim);
     eigen_values = calloc(n, sizeof(double));
     if(!eigen_values) {
