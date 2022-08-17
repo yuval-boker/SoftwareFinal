@@ -31,7 +31,7 @@ void print_matrix(double **array, int n, int dim) {
     int i;
     for (i = 0; i < n; i++) {
         print_row(array[i], dim);
-        if (i < n - 1) //change to i < n?
+        if (i < n - 1)
             printf("\n");
     }
 }
@@ -640,7 +640,7 @@ double **create_T(Point *points, int dim, int n, int *k) {
     if(*k == 0){
         *k = eigengap(eigen_arr, n);
     }
-    U = create_U;
+    U = create_U(eigen_arr, n, *k);
     normalize_U(U, n, *k);
     free(eigen_values);
     return U;
