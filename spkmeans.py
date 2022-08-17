@@ -3,9 +3,7 @@ import numpy as np
 import pandas as pd
 import spkmeans_capi
 
-MAX_ITER = 300
-JACOBI_MAX_ITER = 100
-ERROR = "An Error Has Occured"
+
 np.random.seed(0)
 
 
