@@ -19,7 +19,7 @@ def double_to_str(num):
 
 def print_list(lst):
     for row in lst:
-            print(",".join('{:.4f}'.format(np.round(coord, 4)) for coord in row))
+            print(",".join('{:.4f}'.format(coord) for coord in row))
 
 def prepare():
     assert len(sys.argv) == 4, 'Invalid Input!'
@@ -54,7 +54,6 @@ def get_goal(goal, data_array, n, dim, k):
         eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
         eigen_vectors = np.array(eigen_vectors).reshape(n,n)
         print_list([eigen_values])
-        print()
         print_list(eigen_vectors.T)
     else:
         if goal == "wam":

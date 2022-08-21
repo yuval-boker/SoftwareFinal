@@ -8,7 +8,7 @@
 #define Mem_Assertion(x) if (!(x)){printf("An Error Has Occurred\n"); exit(1);}
 #define MAX_ITER 300
 #define EPS 0.0
-#define EPSILON_J 0.00001
+#define EPSILON_J 0.000001
 #define MAX_ITER_J 100
 
 /** Structs **/

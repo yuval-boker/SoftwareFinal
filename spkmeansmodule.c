@@ -265,7 +265,7 @@ static PyObject *run_jacobi(PyObject *self, PyObject *args){
     pyList_to_matrix(py_vectors, vectors, dim, n);
     eigen_vectors = jacobi(vectors, n);
     py_vectors = matrix_to_PyList(eigen_vectors, n, n);
-    get_diag(vectors,eigen_values, n);
+    get_diag(vectors, eigen_values, n);
     py_values = arr_to_PyList(eigen_values, n);
     free(eigen_values);
     free_2D(eigen_vectors);

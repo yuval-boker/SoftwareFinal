@@ -31,18 +31,31 @@ void print_matrix(double **array, int n, int dim) {
     int i;
     for (i = 0; i < n; i++) {
         print_row(array[i], dim);
-        if (i < n - 1)
+        if (i < n)
             printf("\n");
     }
 }
 
+void print_transpose(double **mat, int n, int dim){
+    int i,j;
+    for (j = 0; j<dim;j++){
+        for(i = 0; i<n; i++){
+            print_double(mat[i][j]);
+            if(i<n-1){
+                printf("%c",',');
+            }
+        }
+        printf("\n");
+    }
+}
 /*
  * Prints the eigenvalues as the first line, second line onward is the corresponding eigenvectors
  */
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
     print_row(eigen_values, n);
     printf("\n");
-    print_matrix(eigen_vectors, n, n);
+    //print_matrix(eigen_vectors, n, n);
+    print_transpose(eigen_vectors,n,n);
 }
 
 /*
@@ -229,7 +242,7 @@ int transform_matrix(double **mat, double **v, int n, int i, int j) {
     t = sign(theta)/(fabs(theta) + sqrt((theta * theta)+1.0));
     c = 1.0/(sqrt((t * t) + 1.0));
     s = t * c;
-
+    printf("theta= %lf t= %lf c= %lf s= %lf\n",theta,t,c,s);
     for(r = 0; r < n; r++){
         if (r != i && r != j){
             tmp1 = mat[r][i]; /* Ari */
@@ -266,27 +279,36 @@ double off_square(double **mat, int n) {
     double sum = 0.0;
     for (i = 0; i < n; i++) {
         for (j = 0; j < i; j++) {
-            sum += 2 * (mat[i][j] * mat[i][j]);
+            sum += pow(mat[i][j],2);
         }
     }
-    return sum;
+    return 2 * sum;
 }
 /*
  * creates jacobi
  */
 double **jacobi(double **A, int n) {
+    printf("n = %d",n);
     double **V;
     double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
     V = I_matrix(n); /* initializing V to Identity matrix */
+    printf("V start:\n");
+    print_matrix(V,n,n);
     while (l < MAX_ITER_J) {
-        if (l == 0) {
+        if(l==0){
             off_A = off_square(A, n);
         }
         find_max_indices_off_diag(A, &i, &j, n);
+        printf("i is %d, j is %d \n",i,j);
         transform_matrix(A, V, n, i, j);
+        printf(" A after %d iteration is:\n",l);
+        print_matrix(A,n,5);
+        printf("V after %d iteration is:\n",l);
+        print_matrix(V,n,n);
         off_A_prime = off_square(A, n);
-        if((l != 0) && ((off_A - off_A_prime) <= EPSILON_J)) {
+        if((l != 0) && (off_A - off_A_prime <= EPSILON_J)) {
+            printf("off is:%lf\n",off_A-off_A_prime);
             return V;
         }
         off_A = off_A_prime;
@@ -719,7 +741,7 @@ int main(int argc, char *argv[]) {
     FILE* fp;
     Info info;
     Point* points;
-    if (argc != 2) { 
+    if (argc != 3) { 
         printf("Invalid Input!\n");
         exit(1);
     }
