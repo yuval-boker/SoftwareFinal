@@ -677,18 +677,12 @@ Info extractInfo(FILE* file) {
     Info inf;
     dim = 1;
     n = 1;
-    while(c != EOF){
-        c = getc(file);
-        if(c == ','){
+    for (c = getc(file); c != '\n'; c = getc(file)){
+        if (c == ','){
             dim++;
         }
-        if(c == '\n'){
-            break;
-        }
     }
-    rewind(file);
-    while(c != EOF){
-        c = fgetc(file);
+    for (c = getc(file); c != EOF; c = getc(file)){
         if (c == '\n'){
             n++;
         }
