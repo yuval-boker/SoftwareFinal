@@ -672,17 +672,23 @@ double **create_T(Point *points, int dim, int n, int *k) {
  * Returns n and dim 
  */
 Info extractInfo(FILE* file) {
-    char c;
+    char c = '\0';
     int dim, n;
     Info inf;
     dim = 1;
     n = 1;
-    for (c = getc(file); c != '\n'; c = getc(file)){
-        if (c == ','){
+    while(c != EOF){
+        c = getc(file);
+        if(c == ','){
             dim++;
         }
+        if(c == '\n'){
+            break;
+        }
     }
-    for (c = getc(file); c != EOF; c = getc(file)){
+    rewind(file);
+    while(c != EOF){
+        c = fgetc(file);
         if (c == '\n'){
             n++;
         }
