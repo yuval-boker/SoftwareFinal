@@ -34,8 +34,9 @@ void print_matrix(double **array, int n, int dim) {
         if (i < n)
             printf("\n");
     }
+    printf("\n");
 }
-
+/* for test use
 void print_transpose(double **mat, int n, int dim){
     int i,j;
     for (j = 0; j<dim;j++){
@@ -48,6 +49,7 @@ void print_transpose(double **mat, int n, int dim){
         printf("\n");
     }
 }
+ */
 /*
  * Prints the eigenvalues as the first line, second line onward is the corresponding eigenvectors
  */
