@@ -34,6 +34,7 @@ void print_matrix(double **array, int n, int dim) {
         if (i < n)
             printf("\n");
     }
+    printf("\n");
 }
 /* for test use
 void print_transpose(double **mat, int n, int dim){
@@ -57,7 +58,6 @@ void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) {
     printf("\n");
     print_matrix(eigen_vectors, n, n);
     /*print_transpose(eigen_vectors,n,n);*/
-    printf("\n");
 }
 
 /*
