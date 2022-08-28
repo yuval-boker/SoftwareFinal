@@ -15,6 +15,7 @@ void print_row(double *row, int n) {
         if (i < n - 1)
             printf("%c", ',');
     }
+    printf("\n");
 }
 
 void print_column(double *col, int dim, int n) {
@@ -31,8 +32,8 @@ void print_matrix(double **array, int n, int dim) {
     int i;
     for (i = 0; i < n; i++) {
         print_row(array[i], dim);
-        if (i < n)
-            printf("\n");
+        /*if (i < n)
+            printf("\n");*/
     }
     printf("\n");
 }
@@ -55,7 +56,7 @@ void print_transpose(double **mat, int n, int dim){
  */
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
     print_row(eigen_values, n);
-    printf("\n");
+    /*printf("\n");*/
     print_matrix(eigen_vectors, n, n);
     /*print_transpose(eigen_vectors,n,n);*/
 }
