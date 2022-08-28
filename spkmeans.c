@@ -64,13 +64,20 @@ void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) {
  * output: an empty matrix of size n*m
  */
 Point* allocate_mem(int dim, int n) {
-    int i;
+    int i,j;
     double* v;
     Point* points = (Point*)calloc(n, sizeof(Point));
     Mem_Assertion(points != NULL);
-    for(i = 0; i < n; i++){
+    for (i = 0; i < n; i++){
         v = (double*) calloc(dim,sizeof(double));
-        Mem_Assertion(v != NULL);
+        /*Mem_Assertion(v != NULL);*/
+        if (!v){
+            for (j = 0; j < i; j++){
+                free(points[j].vector);
+            }
+            free(points);
+            Mem_Assertion(v);
+        }
         points[i].vector = v;
     }
     return points;
@@ -288,7 +295,7 @@ double off_square(double **mat, int n) {
  * creates jacobi
  */
 double **jacobi(double **A, int n) {
-    /*printf("n = %d",n);*/
+    printf("n = %d",n);
     double **V;
     double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
