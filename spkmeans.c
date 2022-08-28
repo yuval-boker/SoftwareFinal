@@ -293,8 +293,8 @@ double **jacobi(double **A, int n) {
     double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
     V = I_matrix(n); /* initializing V to Identity matrix */
-    printf("V start:\n");
-    print_matrix(V,n,n);
+    /*printf("V start:\n");
+    print_matrix(V,n,n);*/
     while (l < MAX_ITER_J) {
         if(l==0){
             off_A = off_square(A, n);
@@ -302,10 +302,10 @@ double **jacobi(double **A, int n) {
         find_max_indices_off_diag(A, &i, &j, n);
         /*printf("i is %d, j is %d \n",i,j);*/
         transform_matrix(A, V, n, i, j);
-        /*printf(" A after %d iteration is:\n",l);*/
+        /*printf(" A after %d iteration is:\n",l);
         print_matrix(A,n,5);
-        /*printf("V after %d iteration is:\n",l);*/
-        print_matrix(V,n,n);
+        printf("V after %d iteration is:\n",l);
+        print_matrix(V,n,n);*/
         off_A_prime = off_square(A, n);
         if((l != 0) && (off_A - off_A_prime <= EPSILON_J)) {
             /*printf("off is:%lf\n",off_A-off_A_prime);*/
