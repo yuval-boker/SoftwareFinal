@@ -295,7 +295,7 @@ double off_square(double **mat, int n) {
  * creates jacobi
  */
 double **jacobi(double **A, int n) {
-    printf("n = %d",n);
+    /*printf("n = %d",n);*/
     double **V;
     double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
