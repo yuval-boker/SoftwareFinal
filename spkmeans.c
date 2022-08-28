@@ -54,8 +54,8 @@ void print_transpose(double **mat, int n, int dim){
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
     print_row(eigen_values, n);
     printf("\n");
-    //print_matrix(eigen_vectors, n, n);
-    print_transpose(eigen_vectors,n,n);
+    print_matrix(eigen_vectors, n, n);
+    /*print_transpose(eigen_vectors,n,n);*/
 }
 
 /*
@@ -242,7 +242,7 @@ int transform_matrix(double **mat, double **v, int n, int i, int j) {
     t = sign(theta)/(fabs(theta) + sqrt((theta * theta)+1.0));
     c = 1.0/(sqrt((t * t) + 1.0));
     s = t * c;
-    printf("theta= %lf t= %lf c= %lf s= %lf\n",theta,t,c,s);
+    /*printf("theta= %lf t= %lf c= %lf s= %lf\n",theta,t,c,s);*/
     for(r = 0; r < n; r++){
         if (r != i && r != j){
             tmp1 = mat[r][i]; /* Ari */
@@ -288,7 +288,7 @@ double off_square(double **mat, int n) {
  * creates jacobi
  */
 double **jacobi(double **A, int n) {
-    printf("n = %d",n);
+    /*printf("n = %d",n);*/
     double **V;
     double off_A = 0.0, off_A_prime;
     int i, j, l = 0;
@@ -300,15 +300,15 @@ double **jacobi(double **A, int n) {
             off_A = off_square(A, n);
         }
         find_max_indices_off_diag(A, &i, &j, n);
-        printf("i is %d, j is %d \n",i,j);
+        /*printf("i is %d, j is %d \n",i,j);*/
         transform_matrix(A, V, n, i, j);
-        printf(" A after %d iteration is:\n",l);
+        /*printf(" A after %d iteration is:\n",l);*/
         print_matrix(A,n,5);
-        printf("V after %d iteration is:\n",l);
+        /*printf("V after %d iteration is:\n",l);*/
         print_matrix(V,n,n);
         off_A_prime = off_square(A, n);
         if((l != 0) && (off_A - off_A_prime <= EPSILON_J)) {
-            printf("off is:%lf\n",off_A-off_A_prime);
+            /*printf("off is:%lf\n",off_A-off_A_prime);*/
             return V;
         }
         off_A = off_A_prime;
@@ -496,7 +496,7 @@ int centroid_update(Cluster* cluster, int dim, double *tmp_vector){
         tmp_vector[i] = cluster->newPoints[i]/cluster->count;
     }
     norm_check = euclidean_norm(cluster->centroid, dim) - euclidean_norm(tmp_vector, dim);
-    if (norm_check >= EPS || norm_check <= -EPS){ //?
+    if (norm_check >= EPS || norm_check <= -EPS){ /*?*/
         has_changed = 0;
     }
     for (l = 0; l < dim; l++) {
@@ -672,11 +672,28 @@ double **create_T(Point *points, int dim, int n, int *k) {
  * Returns n and dim 
  */
 Info extractInfo(FILE* file) {
-    char c = '\0';
+    /*char c = '\0';*/
+    char c;
     int dim, n;
     Info inf;
     dim = 1;
     n = 1;
+    /* while(c != EOF){
+        c = getc(file);
+        if(c == ','){
+            dim++;
+        }
+        if(c == '\n'){
+            break;
+        }
+    }
+    rewind(file);
+    while(c != EOF){
+        c = fgetc(file);
+        if (c == '\n'){
+            n++;
+        }
+    } */
     for (c = getc(file); c != '\n'; c = getc(file)){
         if (c == ','){
             dim++;
