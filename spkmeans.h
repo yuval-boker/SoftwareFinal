@@ -60,6 +60,7 @@ void print_row(double *row, int n);
 void print_column(double *col, int dim, int n);
 void print_matrix(double **array, int n, int dim);
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n);
+void print_mat_check(double** mat, int n, int d);/* check*/
 
 /*
  * WAM

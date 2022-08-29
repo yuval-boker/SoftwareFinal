@@ -21,6 +21,10 @@ def print_list(lst):
     for row in lst:
             print(",".join('{:.4f}'.format(coord) for coord in row))
 
+def print_mat_check(mat):
+    for i in range(len(mat)):
+        print(','.join(["%.4f" % elem for elem in mat[i]]))
+
 def prepare():
     assert len(sys.argv) == 4, 'Invalid Input!'
     k = validity_check_k()
@@ -53,8 +57,10 @@ def get_goal(goal, data_array, n, dim, k):
     elif goal == "jacobi":
         eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
         eigen_vectors = np.array(eigen_vectors).reshape(n,n)
-        print_list([eigen_values])
-        print_list(eigen_vectors.T)
+        # print_list([eigen_values])
+        # print_list(eigen_vectors.T)
+        print_mat_check([eigen_values])
+        print_mat_check(eigen_vectors.T)
     else:
         if goal == "wam":
             res = spkmeans_capi.get_WAM(data_array, n, dim)
@@ -66,7 +72,8 @@ def get_goal(goal, data_array, n, dim, k):
             print("Invalid Input!")
             exit()
         res = np.array(res).reshape(n, n)
-        print_list(res)
+        # print_list(res)
+        print_mat_check(res)
 
 
 # implementation of k-means++, n = number of points, dim = dimension of each point,

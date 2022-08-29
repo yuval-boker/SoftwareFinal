@@ -27,6 +27,15 @@ void print_column(double *col, int dim, int n) {
     }
 }
 
+void print_mat_check(double** mat, int n, int d){
+    int i,j;
+    for (i = 0; i < n; i++){
+        for (j = 0;j < d - 1; j++){
+            printf("%.4f,", mat[i][j]);
+        }
+        printf("%.4f\n", mat[i][d-1]);
+    }
+}
 
 void print_matrix(double **array, int n, int dim) {
     int i;
@@ -57,7 +66,8 @@ void print_transpose(double **mat, int n, int dim){
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
     print_row(eigen_values, n);
     /*printf("\n");*/
-    print_matrix(eigen_vectors, n, n);
+    /*print_matrix(eigen_vectors, n, n);*/
+    print_mat_check(eigen_vectors,n,n);
     /*print_transpose(eigen_vectors,n,n);*/
 }
 
@@ -743,17 +753,20 @@ void get_goal(char *goal, Point *points, int dim, int n) {
     double **tmp;
     if(strcmp(goal, "wam") == 0) {
         tmp = create_WAM(points, dim, n);
-        print_matrix(tmp, n, n);
+        /*print_matrix(tmp, n, n);*/
+        print_mat_check(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "ddg") == 0) {
         tmp = create_DDG(points, dim, n);
-        print_matrix(tmp, n, n);
+        /*print_matrix(tmp, n, n);*/
+        print_mat_check(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "lnorm") == 0) {
         tmp = create_L_norm(points, dim, n);
-        print_matrix(tmp, n, n);
+        /*print_matrix(tmp, n, n);*/
+        print_mat_check(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "jacobi") == 0){
