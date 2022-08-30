@@ -8,7 +8,7 @@ void print_double(double num) {
     printf("%.4f", num);
 }
 
-void print_row(double *row, int n) {
+/*void print_row(double *row, int n) {
     int i;
     for (i = 0; i < n; i++) {
         print_double(row[i]);
@@ -16,6 +16,13 @@ void print_row(double *row, int n) {
             printf("%c", ',');
     }
     printf("\n");
+}*/
+void print_row(double *row, int n){
+    int i;
+    for (i = 0;i < n - 1; i++){
+        printf("%.4f,",row[i]);
+    }
+    printf("%.4f\n", row[n-1]);
 }
 
 void print_column(double *col, int dim, int n) {
@@ -33,7 +40,12 @@ void print_mat_check(double** mat, int n, int d){
         for (j = 0;j < d - 1; j++){
             printf("%.4f,", mat[i][j]);
         }
-        printf("%.4f\n", mat[i][d-1]);
+        if ( i == n - 1){
+           printf("%.4f\n\n", mat[i][d-1]); 
+        }
+        else{
+            printf("%.4f\n", mat[i][d-1]);
+        }
     }
 }
 
