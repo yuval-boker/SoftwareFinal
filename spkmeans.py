@@ -19,11 +19,8 @@ def double_to_str(num):
 
 def print_list(lst):
     for row in lst:
-            print(",".join('{:.4f}'.format(coord) for coord in row))
+            print(','.join('{:.4f}'.format(coord) for coord in row))
 
-def print_mat_check(mat):
-    for i in range(len(mat)):
-        print(','.join(["%.4f" % elem for elem in mat[i]]))
 
 def prepare():
     assert len(sys.argv) == 4, 'Invalid Input!'
@@ -57,10 +54,8 @@ def get_goal(goal, data_array, n, dim, k):
     elif goal == "jacobi":
         eigen_values, eigen_vectors = spkmeans_capi.run_jacobi(data_array, n, dim)
         eigen_vectors = np.array(eigen_vectors).reshape(n,n)
-        # print_list([eigen_values])
-        # print_list(eigen_vectors.T)
-        print_mat_check([eigen_values])
-        print_mat_check(eigen_vectors.T)
+        print_list([eigen_values])
+        print_list(eigen_vectors)
     else:
         if goal == "wam":
             res = spkmeans_capi.get_WAM(data_array, n, dim)
@@ -72,8 +67,8 @@ def get_goal(goal, data_array, n, dim, k):
             print("Invalid Input!")
             exit()
         res = np.array(res).reshape(n, n)
-        # print_list(res)
-        print_mat_check(res)
+        print_list(res)
+
 
 
 # implementation of k-means++, n = number of points, dim = dimension of each point,
@@ -96,6 +91,7 @@ def k_means_pp(points, k):
         print(','.join([str(i) for i in init_centroids]))  # prints the indices of observations chosen by
         # the K-means++ algorithm as the initial centroids.
         print_list(res) # prints the final centroids from the K-means algorithm executed in c
+
 
 if __name__ == '__main__':
     k, goal, file = prepare()

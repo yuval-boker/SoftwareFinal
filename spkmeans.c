@@ -8,15 +8,6 @@ void print_double(double num) {
     printf("%.4f", num);
 }
 
-/*void print_row(double *row, int n) {
-    int i;
-    for (i = 0; i < n; i++) {
-        print_double(row[i]);
-        if (i < n - 1)
-            printf("%c", ',');
-    }
-    printf("\n");
-}*/
 void print_row(double *row, int n){
     int i;
     for (i = 0;i < n - 1; i++){
@@ -34,29 +25,14 @@ void print_column(double *col, int dim, int n) {
     }
 }
 
-void print_mat_check(double** mat, int n, int d){
+void print_matrix(double **array, int n, int dim) {
     int i,j;
     for (i = 0; i < n; i++){
-        for (j = 0;j < d - 1; j++){
-            printf("%.4f,", mat[i][j]);
+        for (j = 0;j < dim - 1; j++){
+            printf("%.4f,", array[i][j]);
         }
-        if ( i == n - 1){
-           printf("%.4f\n\n", mat[i][d-1]); 
-        }
-        else{
-            printf("%.4f\n", mat[i][d-1]);
-        }
+        printf("%.4f\n", array[i][dim-1]);
     }
-}
-
-void print_matrix(double **array, int n, int dim) {
-    int i;
-    for (i = 0; i < n; i++) {
-        print_row(array[i], dim);
-        /*if (i < n)
-            printf("\n");*/
-    }
-    printf("\n");
 }
 /* for test use
 void print_transpose(double **mat, int n, int dim){
@@ -77,9 +53,8 @@ void print_transpose(double **mat, int n, int dim){
  */
 void print_Jacobi(double **eigen_vectors, double *eigen_values, int n) { 
     print_row(eigen_values, n);
-    /*printf("\n");*/
-    /*print_matrix(eigen_vectors, n, n);*/
-    print_mat_check(eigen_vectors,n,n);
+    printf("\n");
+    print_matrix(eigen_vectors, n, n);
     /*print_transpose(eigen_vectors,n,n);*/
 }
 
@@ -704,28 +679,11 @@ double **create_T(Point *points, int dim, int n, int *k) {
  * Returns n and dim 
  */
 Info extractInfo(FILE* file) {
-    /*char c = '\0';*/
     char c;
     int dim, n;
     Info inf;
     dim = 1;
     n = 1;
-    /* while(c != EOF){
-        c = getc(file);
-        if(c == ','){
-            dim++;
-        }
-        if(c == '\n'){
-            break;
-        }
-    }
-    rewind(file);
-    while(c != EOF){
-        c = fgetc(file);
-        if (c == '\n'){
-            n++;
-        }
-    } */
     for (c = getc(file); c != '\n'; c = getc(file)){
         if (c == ','){
             dim++;
@@ -765,20 +723,17 @@ void get_goal(char *goal, Point *points, int dim, int n) {
     double **tmp;
     if(strcmp(goal, "wam") == 0) {
         tmp = create_WAM(points, dim, n);
-        /*print_matrix(tmp, n, n);*/
-        print_mat_check(tmp, n, n);
+        print_matrix(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "ddg") == 0) {
         tmp = create_DDG(points, dim, n);
-        /*print_matrix(tmp, n, n);*/
-        print_mat_check(tmp, n, n);
+        print_matrix(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "lnorm") == 0) {
         tmp = create_L_norm(points, dim, n);
-        /*print_matrix(tmp, n, n);*/
-        print_mat_check(tmp, n, n);
+        print_matrix(tmp, n, n);
         free_2D(tmp);
     }
     else if(strcmp(goal, "jacobi") == 0){
