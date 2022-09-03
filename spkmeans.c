@@ -637,7 +637,7 @@ double **create_L_norm(Point *points, int dim, int n) {
  * Prints a matrix where The first line contains the eigenvalues,
  * and the second line onward contains the corresponding eigenvectors 
  */
-void create_Jacobi(Point *points,int dim, int n) {
+void create_Jacobi(Point *points, int dim, int n) {
     double **A, **eigen_vectors;
     double *eigen_values;
     A = matrix_init(n,dim);
