@@ -418,8 +418,10 @@ void normalize_U(double **U, int n, int k) {
             sum += pow(U[i][j], 2);
         }
         sum = sqrt(sum);
-        for(j = 0; j < k; j++){
-            U[i][j] = U[i][j] / (sum);
+        if (sum != 0){
+            for(j = 0; j < k; j++){
+                U[i][j] /= sum;
+            }
         }
     }
 }
